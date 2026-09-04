@@ -237,3 +237,7 @@ Keep private:
 - passport details
 - payment data
 - private phone numbers
+
+
+## Version 2.1
+All four Google Form links are already wired in. Activity signup automatically prefills both Activity ID and Going/Maybe. The remaining blank settings in `config.js` are the published Google Sheet CSV URLs.
