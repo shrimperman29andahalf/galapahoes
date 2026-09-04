@@ -2,192 +2,214 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#0b3240">
   <title>Galápagos '26–'27 — Friends Trip</title>
-  <meta name="description" content="Galápagos friends trip planning hub — December 27 to January 5.">
+  <meta name="description" content="Galápagos friends trip hub — Dec 27, 2026 to Jan 5, 2027.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header class="hero">
-    <nav class="nav">
-      <a class="logo" href="#">GALÁPAGOS <span>'26–'27</span></a>
-      <a class="nav-link" href="#trip-board">Trip Board ↓</a>
+  <header class="topbar">
+    <a class="brand" href="#top">
+      <span class="brand-mark">◌</span>
+      <span>GALÁPAGOS <b>'26–'27</b></span>
+    </a>
+
+    <nav class="desktop-nav" aria-label="Main navigation">
+      <a href="#trip-board">Trip Board</a>
+      <a href="#itinerary">Itinerary</a>
+      <a href="#activities">Activities</a>
+      <a href="#crew">Crew</a>
+      <a href="#flights">Flights</a>
+      <a href="#house">House</a>
     </nav>
 
-    <div class="hero-inner">
-      <p class="eyebrow">ECUADOR · GALÁPAGOS · 10 DAYS</p>
-      <h1>10 days<br><em>off the map.</em></h1>
-      <p class="hero-copy">A friends trip to the islands. One house, a questionable number of plans, and hopefully no lost luggage.</p>
-      <div class="hero-actions">
-        <a class="button button-dark" href="#itinerary">See the itinerary</a>
-        <a class="text-link" href="#trip-board">What's new? ↓</a>
-      </div>
-    </div>
-
-    <div class="hero-stamp">DEC 27<br><small>—</small><br>JAN 05</div>
+    <button class="menu-button" id="menuButton" aria-label="Open menu">☰</button>
   </header>
 
-  <main>
-    <section class="quickbar">
-      <div><span>🐢</span><strong>~20 friends</strong></div>
-      <div><span>🏠</span><strong>One house</strong></div>
-      <div><span>🌊</span><strong>Island time</strong></div>
-      <div><span>🎆</span><strong>New Year's Eve</strong></div>
+  <aside class="mobile-menu" id="mobileMenu">
+    <a href="#trip-board">Trip Board</a>
+    <a href="#itinerary">Itinerary</a>
+    <a href="#activities">Activities</a>
+    <a href="#crew">Crew</a>
+    <a href="#flights">Flights</a>
+    <a href="#house">House</a>
+  </aside>
+
+  <main id="top">
+    <section class="hero">
+      <div class="hero-overlay"></div>
+      <div class="hero-content">
+        <p class="kicker">10 DAYS · ~20 FRIENDS · ONE HOUSE</p>
+        <h1>10 days<br><em>off the map.</em></h1>
+
+        <div class="hero-meta">
+          <span>📅 Dec 27, 2026 — Jan 5, 2027</span>
+          <span>📍 Galápagos, Ecuador</span>
+        </div>
+
+        <div class="hero-actions">
+          <a class="btn primary" href="#activities">Explore activities</a>
+          <a class="btn glass" href="#trip-board">What's new?</a>
+        </div>
+      </div>
+
+      <div class="countdown-card">
+        <span class="countdown-number" id="daysToGo">—</span>
+        <span class="countdown-label">DAYS TO GO</span>
+        <small>Until Dec 27, 2026</small>
+      </div>
     </section>
 
-    <section class="section board-section" id="trip-board">
-      <div class="section-heading">
+    <section class="quick-links">
+      <a href="#trip-board"><span>💬</span><b>Trip Board</b><small>Latest updates</small></a>
+      <a href="#itinerary"><span>🗓️</span><b>Itinerary</b><small>Daily plan</small></a>
+      <a href="#activities"><span>🌊</span><b>Activities</b><small>Propose + sign up</small></a>
+      <a href="#crew"><span>👥</span><b>Crew</b><small>Who's coming</small></a>
+      <a href="#flights"><span>✈️</span><b>Flights</b><small>Arrivals + departures</small></a>
+      <a href="#house"><span>🏠</span><b>House</b><small>Home base</small></a>
+    </section>
+
+    <section class="section" id="trip-board">
+      <div class="section-head">
         <div>
           <p class="eyebrow">THE LATEST</p>
           <h2>Trip board</h2>
         </div>
-        <p class="section-note">The place to check before asking, “Wait, what are we doing?”</p>
+        <p>The source of truth when the group chat gets chaotic.</p>
       </div>
 
-      <div class="board-grid">
-        <article class="post featured">
-          <div class="post-meta"><span class="tag">NEW</span><span>September 4</span></div>
-          <h3>Welcome to the trip HQ.</h3>
-          <p>This is our planning home base. Itinerary, activities, flights, food, house info, and important updates will live here so they don't disappear into the group chat.</p>
-        </article>
+      <div class="board-layout">
+        <div class="announcements" id="announcementList"></div>
 
-        <article class="post">
-          <div class="post-meta"><span class="tag muted">PLANNING</span><span>Coming soon</span></div>
-          <h3>Send in your flight info</h3>
-          <p>Once everyone has flights, we'll build the arrival/departure board and coordinate rides.</p>
-          <button class="small-button" onclick="showDemo('Flight form')">Add my flight →</button>
-        </article>
+        <aside class="board-sidebar">
+          <div class="photo-card turtle">
+            <div>GOOD VIBES.<br>WILDLIFE.<br>GOOD COMPANY.</div>
+          </div>
 
-        <article class="post">
-          <div class="post-meta"><span class="tag muted">VOTE</span><span>Coming soon</span></div>
-          <h3>What are we doing first?</h3>
-          <p>Boat day, snorkeling, beach, exploring, or doing absolutely nothing?</p>
-          <button class="small-button" onclick="showDemo('Activity vote')">Vote →</button>
-        </article>
+          <div class="quick-actions">
+            <h3>Quick links</h3>
+            <button data-form="flight">✈️ Add my flight info <span>→</span></button>
+            <button data-form="proposal">🌊 Propose an activity <span>→</span></button>
+            <a href="#activities">🧭 Browse activities <span>→</span></a>
+            <a href="#crew">👥 See the crew <span>→</span></a>
+          </div>
+        </aside>
       </div>
     </section>
 
-    <section class="section dark-section" id="itinerary">
-      <div class="section-heading light">
+    <section class="section dark" id="itinerary">
+      <div class="section-head">
         <div>
           <p class="eyebrow">DEC 27 — JAN 05</p>
           <h2>The plan</h2>
         </div>
-        <p class="section-note">Nothing here is set in stone yet. That's part of the fun.</p>
+        <p>Flexible by design. Activities can branch off from this base schedule.</p>
       </div>
 
-      <div class="timeline">
-        <article class="day">
-          <div class="date">DEC<br><strong>27</strong></div>
-          <div><span class="day-label">DAY 01 · ARRIVAL</span><h3>LAND</h3><p>Everyone makes it to the island. Find the house. Find a drink. Try not to lose your luggage.</p></div>
-        </article>
-        <article class="day">
-          <div class="date">DEC<br><strong>28</strong></div>
-          <div><span class="day-label">DAY 02</span><h3>GET YOUR BEARINGS</h3><p>Beach, town, groceries, and recovering from travel.</p></div>
-        </article>
-        <article class="day">
-          <div class="date">DEC<br><strong>29</strong></div>
-          <div><span class="day-label">DAY 03</span><h3>INTO THE BLUE</h3><p>Potential boat or snorkeling day. Details TBD.</p></div>
-        </article>
-        <article class="day">
-          <div class="date">DEC<br><strong>30</strong></div>
-          <div><span class="day-label">DAY 04</span><h3>ISLAND MODE</h3><p>Adventure day, explore, or keep it gloriously unplanned.</p></div>
-        </article>
-        <article class="day">
-          <div class="date">DEC<br><strong>31</strong></div>
-          <div><span class="day-label">DAY 05 · NEW YEAR'S EVE</span><h3>NEW YEAR'S EVE</h3><p>TBD — but presumably irresponsible.</p></div>
-        </article>
-        <article class="day">
-          <div class="date">JAN<br><strong>01</strong></div>
-          <div><span class="day-label">DAY 06</span><h3>RECOVERY</h3><p>No one schedules anything before noon. This is currently a rule.</p></div>
-        </article>
-        <article class="day">
-          <div class="date">JAN<br><strong>02</strong></div>
-          <div><span class="day-label">DAY 07</span><h3>ADVENTURE</h3><p>Open slot for a bigger excursion.</p></div>
-        </article>
-        <article class="day">
-          <div class="date">JAN<br><strong>03</strong></div>
-          <div><span class="day-label">DAY 08</span><h3>FREE DAY</h3><p>Pick your own adventure.</p></div>
-        </article>
-        <article class="day">
-          <div class="date">JAN<br><strong>04</strong></div>
-          <div><span class="day-label">DAY 09</span><h3>LAST FULL DAY</h3><p>Final beach, final dinner, final questionable decisions.</p></div>
-        </article>
-        <article class="day">
-          <div class="date">JAN<br><strong>05</strong></div>
-          <div><span class="day-label">DAY 10 · DEPARTURE</span><h3>UNTIL NEXT TIME</h3><p>Pack up and head home.</p></div>
-        </article>
+      <div class="itinerary-grid" id="itineraryGrid"></div>
+    </section>
+
+    <section class="section" id="activities">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">BUILD YOUR OWN TRIP</p>
+          <h2>Activities</h2>
+        </div>
+        <div class="section-actions">
+          <button class="btn primary" data-form="proposal">+ Propose an activity</button>
+        </div>
+      </div>
+
+      <div class="activity-toolbar">
+        <div class="filters" id="activityFilters">
+          <button class="active" data-filter="all">All</button>
+          <button data-filter="open">Open</button>
+          <button data-filter="free">Free</button>
+          <button data-filter="paid">Paid</button>
+        </div>
+        <p><span id="activityCount">0</span> activities</p>
+      </div>
+
+      <div class="activity-grid" id="activityGrid"></div>
+
+      <div class="activity-explainer">
+        <div><span>1</span><h3>Propose</h3><p>Anyone can submit an idea without creating an account.</p></div>
+        <div><span>2</span><h3>Approve</h3><p>The organizer reviews it before it shows up publicly.</p></div>
+        <div><span>3</span><h3>Join</h3><p>Friends choose Going or Maybe so head counts stay useful.</p></div>
       </div>
     </section>
 
-    <section class="section" id="crew">
-      <div class="section-heading">
+    <section class="section sand" id="crew">
+      <div class="section-head">
         <div>
           <p class="eyebrow">THE CREW</p>
           <h2>Who's going?</h2>
         </div>
-        <p class="section-note">Add names as the crew locks in.</p>
+        <button class="btn outline" data-form="crew">Add / update my info</button>
       </div>
-      <div class="crew-grid">
-        <div class="crew-card"><span>01</span><strong>Pablo</strong><small>Organizer</small></div>
-        <div class="crew-card placeholder"><span>02</span><strong>Who's next?</strong><small>Add your name</small></div>
-        <div class="crew-card placeholder"><span>03</span><strong>Who's next?</strong><small>Add your name</small></div>
-        <div class="crew-card placeholder"><span>04</span><strong>Who's next?</strong><small>Add your name</small></div>
-        <div class="crew-card placeholder"><span>05</span><strong>Who's next?</strong><small>Add your name</small></div>
-        <div class="crew-card placeholder"><span>06</span><strong>Who's next?</strong><small>Add your name</small></div>
-      </div>
-      <button class="button button-outline" onclick="showDemo('Crew form')">Add / update my info</button>
+
+      <div class="crew-grid" id="crewGrid"></div>
     </section>
 
-    <section class="split-section">
-      <div class="adventure panel">
-        <p class="eyebrow">THE ADVENTURES</p>
-        <h2>Stuff worth leaving the house for.</h2>
-        <div class="activity-list">
-          <div><span>01</span><strong>Snorkeling</strong><small>Potential day trip</small></div>
-          <div><span>02</span><strong>Boat day</strong><small>Island hopping</small></div>
-          <div><span>03</span><strong>Tortuga Bay</strong><small>Beach / wildlife</small></div>
-          <div><span>04</span><strong>Darwin Research Station</strong><small>Culture + wildlife</small></div>
-        </div>
-      </div>
-
-      <div class="house panel">
-        <p class="eyebrow">HOUSE HQ</p>
-        <h2>Home base.</h2>
-        <p>House details will go here: sleeping arrangements, Wi-Fi, groceries, check-in, what to bring, and anything else people need to know.</p>
-        <div class="notice">🔒 Sensitive house details should only be added once we have a private access method.</div>
-      </div>
-    </section>
-
-    <section class="section flights-section" id="flights">
-      <div class="section-heading">
+    <section class="section" id="flights">
+      <div class="section-head">
         <div>
           <p class="eyebrow">GETTING THERE</p>
           <h2>Flight board</h2>
         </div>
-        <p class="section-note">We'll use this to coordinate airport pickups and departures.</p>
+        <button class="btn primary" data-form="flight">Add my flight</button>
       </div>
-      <div class="table-wrap">
+
+      <div class="table-card">
         <table>
-          <thead><tr><th>NAME</th><th>ARRIVAL</th><th>TIME</th><th>DEPARTURE</th><th>TIME</th></tr></thead>
-          <tbody>
-            <tr><td>Pablo</td><td>Dec 27</td><td>TBD</td><td>Jan 05</td><td>TBD</td></tr>
-            <tr><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
-            <tr><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
-          </tbody>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Arrival</th>
+              <th>Flight</th>
+              <th>Departure</th>
+              <th>Flight</th>
+            </tr>
+          </thead>
+          <tbody id="flightTableBody"></tbody>
         </table>
       </div>
-      <button class="button button-dark" onclick="showDemo('Flight form')">Add my flight</button>
     </section>
 
-    <section class="footer-cta">
+    <section class="house-section" id="house">
+      <div class="house-copy">
+        <p class="eyebrow">HOUSE HQ</p>
+        <h2>Home base.</h2>
+        <p>Sleeping setup, grocery plan, Wi‑Fi, house notes, and other logistics can live here.</p>
+        <div class="privacy-note">🔒 Keep the street address, access codes, passport details, and other sensitive information off the public GitHub Pages site.</div>
+      </div>
+      <div class="house-photo"></div>
+    </section>
+
+    <section class="finale">
       <p class="eyebrow">GALÁPAGOS '26–'27</p>
-      <h2>See you on the islands.</h2>
-      <p>Built for the group chat refugees.</p>
+      <h2>Same crew.<br><em>New horizon.</em></h2>
     </section>
   </main>
 
-  <div class="toast" id="toast">This button will become functional in Version 2.</div>
-  <script src="script.js"></script>
+  <div class="modal-backdrop" id="modalBackdrop" hidden>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <button class="modal-close" id="modalClose" aria-label="Close">×</button>
+      <div class="modal-head">
+        <p class="eyebrow" id="modalEyebrow">FORM</p>
+        <h2 id="modalTitle">Submit</h2>
+      </div>
+      <div id="modalBody"></div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="config.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>
