@@ -1,5 +1,5 @@
-const CFG=window.TRIP_CONFIG||{},$=(s,r=document)=>r.querySelector(s),$$=(s,r=document)=>[...r.querySelectorAll(s)];
 
+const CFG=window.TRIP_CONFIG||{},$=(s,r=document)=>r.querySelector(s),$$=(s,r=document)=>[...r.querySelectorAll(s)];
 const fallback={
 announcements:[
 {date:"SEP 18",tag:"NEW",title:"Flight info + arrival coordination",body:"Please add your arrival and departure details so we can plan airport transportation and group logistics."},
@@ -24,75 +24,25 @@ activities:[
 {id:"A003",name:"Isabela Boat Trip",date:"JAN 02 · 8:00 AM",proposer:"Pablo",description:"Potential full-day boat trip. Exact pricing and timing TBD.",cost:"$90 est.",min:6,status:"Open",image:"https://images.unsplash.com/photo-1544550285-f813152fb2fd?auto=format&fit=crop&w=1000&q=80"}
 ],
 signups:[
-{activityId:"A001",status:"Going",people:3},
-{activityId:"A001",status:"Maybe",people:1},
-{activityId:"A002",status:"Going",people:2},
-{activityId:"A003",status:"Maybe",people:2}
+{activityId:"A001",status:"Going",people:3},{activityId:"A001",status:"Maybe",people:1},
+{activityId:"A002",status:"Going",people:2},{activityId:"A003",status:"Maybe",people:2}
 ],
-crew:[
-{name:"Pablo",note:"Organizer"},
-{name:"Mike",note:"Going"},
-{name:"Sara",note:"Going"},
-{name:"Jordan",note:"Going"},
-{name:"Alex",note:"Going"}
-],
-flights:[
-{name:"Pablo",arrival:"Dec 27 · TBD",arrivalFlight:"TBD",departure:"Jan 5 · TBD",departureFlight:"TBD"}
-]
+crew:[{name:"Pablo",note:"Organizer"},{name:"Mike",note:"Going"},{name:"Sara",note:"Going"},{name:"Jordan",note:"Going"},{name:"Alex",note:"Going"}],
+flights:[{name:"Pablo",arrival:"Dec 27 · TBD",arrivalFlight:"TBD",departure:"Jan 5 · TBD",departureFlight:"TBD"}]
 };
-
 let state=JSON.parse(JSON.stringify(fallback));
 
 function csvToObjects(text){
- const rows=[];
- let row=[],cell="",quote=false;
-
- for(let i=0;i<text.length;i++){
-  const c=text[i],n=text[i+1];
-
-  if(c=='"'&&quote&&n=='"'){
-   cell+='"';
-   i++;
-  }else if(c=='"'){
-   quote=!quote;
-  }else if(c==','&&!quote){
-   row.push(cell);
-   cell="";
-  }else if((c=='\n'||c=='\r')&&!quote){
-   if(c=='\r'&&n=='\n')i++;
-   row.push(cell);
-   cell="";
-   if(row.some(x=>x.trim()))rows.push(row);
-   row=[];
-  }else{
-   cell+=c;
-  }
- }
-
- if(cell||row.length){
-  row.push(cell);
-  rows.push(row);
- }
-
- if(rows.length<2)return[];
-
- const h=rows[0].map(x=>x.trim());
-
- return rows.slice(1).map(r=>
-  Object.fromEntries(h.map((k,i)=>[k,(r[i]||"").trim()]))
- );
+ const rows=[];let row=[],cell="",quote=false;
+ for(let i=0;i<text.length;i++){const c=text[i],n=text[i+1];
+  if(c=='"'&&quote&&n=='"'){cell+='"';i++}else if(c=='"')quote=!quote;
+  else if(c==','&&!quote){row.push(cell);cell=""}
+  else if((c=='\n'||c=='\r')&&!quote){if(c=='\r'&&n=='\n')i++;row.push(cell);cell="";if(row.some(x=>x.trim()))rows.push(row);row=[]}
+  else cell+=c}
+ if(cell||row.length){row.push(cell);rows.push(row)} if(rows.length<2)return[];
+ const h=rows[0].map(x=>x.trim());return rows.slice(1).map(r=>Object.fromEntries(h.map((k,i)=>[k,(r[i]||"").trim()])))
 }
-
-async function loadCsv(url){
- if(!url)return null;
-
- const r=await fetch(url,{cache:"no-store"});
-
- if(!r.ok)throw Error("CSV failed");
-
- return csvToObjects(await r.text());
-}
-
+async function loadCsv(url){if(!url)return null;const r=await fetch(url,{cache:"no-store"});if(!r.ok)throw Error("CSV failed");return csvToObjects(await r.text())}
 async function loadData(){
  const d=CFG.data||{};
 
@@ -112,14 +62,12 @@ async function loadData(){
 
    apply(rows);
    console.info(`[Trip Site] ${label}: loaded ${rows.length} row(s)`);
-
   }catch(e){
    console.error(`[Trip Site] ${label}: failed to load`,e);
   }
  }
 
  await Promise.all([
-
   tryFeed("Announcements",d.announcementsCsv,a=>{
    state.announcements=a.map(x=>({
     date:x.Date||x.date,
@@ -169,44 +117,13 @@ async function loadData(){
     departureFlight:x.DepartureFlight||x["Departure Flight"]||""
    }));
   })
-
  ]);
 
  renderAll();
 }
-
-function countFor(id,status){
- return state.signups
-  .filter(s=>s.activityId===id&&String(s.status).toLowerCase()===status.toLowerCase())
-  .reduce((a,s)=>a+(Number(s.people)||1),0);
-}
-
-function renderAnnouncements(){
- $("#announcementList").innerHTML=state.announcements.map((x,i)=>`
-  <article class="announcement">
-   <div class="meta">
-    <span class="${i===0?"badge":""}">${x.tag}</span>
-    <span>${x.date}</span>
-   </div>
-   <h3>${x.title}</h3>
-   <p>${x.body}</p>
-  </article>
- `).join("");
-}
-
-function renderItinerary(){
- $("#itineraryGrid").innerHTML=state.itinerary.map(x=>`
-  <article class="day-card">
-   <div class="image" style="background-image:url('${x[3]}')"></div>
-   <div class="body">
-    <small>${x[0]}</small>
-    <h3>${x[1]}</h3>
-    <p>${x[2]}</p>
-   </div>
-  </article>
- `).join("");
-}
-
+function countFor(id,status){return state.signups.filter(s=>s.activityId===id&&String(s.status).toLowerCase()===status.toLowerCase()).reduce((a,s)=>a+(Number(s.people)||1),0)}
+function renderAnnouncements(){$("#announcementList").innerHTML=state.announcements.map((x,i)=>`<article class="announcement"><div class="meta"><span class="${i===0?"badge":""}">${x.tag}</span><span>${x.date}</span></div><h3>${x.title}</h3><p>${x.body}</p></article>`).join("")}
+function renderItinerary(){$("#itineraryGrid").innerHTML=state.itinerary.map(x=>`<article class="day-card"><div class="image" style="background-image:url('${x[3]}')"></div><div class="body"><small>${x[0]}</small><h3>${x[1]}</h3><p>${x[2]}</p></div></article>`).join("")}
 function escAttr(v){
  return String(v??"")
   .replace(/&/g,"&amp;")
@@ -217,27 +134,16 @@ function escAttr(v){
 
 function renderActivities(filter="all"){
  let a=state.activities;
-
- if(filter==="open")
-  a=a.filter(x=>String(x.status).toLowerCase()==="open");
-
- if(filter==="free")
-  a=a.filter(x=>/free|\$0/i.test(x.cost));
-
- if(filter==="paid")
-  a=a.filter(x=>!/free|\$0/i.test(x.cost));
+ if(filter==="open")a=a.filter(x=>String(x.status).toLowerCase()==="open");
+ if(filter==="free")a=a.filter(x=>/free|\$0/i.test(x.cost));
+ if(filter==="paid")a=a.filter(x=>!/free|\$0/i.test(x.cost));
 
  $("#activityCount").textContent=a.length;
 
  $("#activityGrid").innerHTML=a.map(x=>`
   <article class="activity-card">
-
-   <div class="activity-img"
-    style="background-image:url('${escAttr(x.image)}')">
-   </div>
-
+   <div class="activity-img" style="background-image:url('${escAttr(x.image)}')"></div>
    <div class="activity-body">
-
     <div class="activity-top">
      <div>
       <div class="activity-date">${x.date}</div>
@@ -259,189 +165,49 @@ function renderActivities(filter="all"){
     </div>
 
     <div class="activity-actions">
+     <button class="going signup-button"
+       data-activity-id="${escAttr(x.id)}"
+       data-activity-name="${escAttr(x.name)}"
+       data-status="Going">I'm in</button>
 
-     <button
-      class="going signup-button"
-      data-activity-id="${escAttr(x.id)}"
-      data-activity-name="${escAttr(x.name)}"
-      data-status="Going">
-      I'm in
-     </button>
-
-     <button
-      class="signup-button"
-      data-activity-id="${escAttr(x.id)}"
-      data-activity-name="${escAttr(x.name)}"
-      data-status="Maybe">
-      Maybe
-     </button>
-
+     <button class="signup-button"
+       data-activity-id="${escAttr(x.id)}"
+       data-activity-name="${escAttr(x.name)}"
+       data-status="Maybe">Maybe</button>
     </div>
-
    </div>
-
   </article>
  `).join("");
 }
-
-function initials(n){
- return n.split(/\s+/)
-  .map(x=>x[0])
-  .join("")
-  .slice(0,2)
-  .toUpperCase();
-}
-
-function renderCrew(){
- $("#crewGrid").innerHTML=state.crew.map(x=>`
-  <article class="crew-card">
-   <div class="initials">${initials(x.name)}</div>
-   <h3>${x.name}</h3>
-   <p>${x.note||"Going"}</p>
-  </article>
- `).join("");
-}
-
-function renderFlights(){
- $("#flightTableBody").innerHTML=
-  state.flights.map(x=>`
-   <tr>
-    <td>${x.name}</td>
-    <td>${x.arrival||"—"}</td>
-    <td>${x.arrivalFlight||"—"}</td>
-    <td>${x.departure||"—"}</td>
-    <td>${x.departureFlight||"—"}</td>
-   </tr>
-  `).join("")
-  ||
-  `<tr><td colspan="5">No flight information yet.</td></tr>`;
-}
-
-function renderAll(){
- renderAnnouncements();
- renderItinerary();
- renderActivities();
- renderCrew();
- renderFlights();
-}
-
-function countdown(){
- const start=new Date(CFG.trip?.startDate||"2026-12-27");
-
- $("#daysToGo").textContent=
-  Math.max(0,Math.ceil((start-new Date())/86400000));
-}
-
-const modal=$("#modalBackdrop");
-const body=$("#modalBody");
-const title=$("#modalTitle");
-const eyebrow=$("#modalEyebrow");
-
+function initials(n){return n.split(/\s+/).map(x=>x[0]).join("").slice(0,2).toUpperCase()}
+function renderCrew(){$("#crewGrid").innerHTML=state.crew.map(x=>`<article class="crew-card"><div class="initials">${initials(x.name)}</div><h3>${x.name}</h3><p>${x.note||"Going"}</p></article>`).join("")}
+function renderFlights(){$("#flightTableBody").innerHTML=state.flights.map(x=>`<tr><td>${x.name}</td><td>${x.arrival||"—"}</td><td>${x.arrivalFlight||"—"}</td><td>${x.departure||"—"}</td><td>${x.departureFlight||"—"}</td></tr>`).join("")||`<tr><td colspan="5">No flight information yet.</td></tr>`}
+function renderAll(){renderAnnouncements();renderItinerary();renderActivities();renderCrew();renderFlights()}
+function countdown(){const start=new Date(CFG.trip?.startDate||"2026-12-27");$("#daysToGo").textContent=Math.max(0,Math.ceil((start-new Date())/86400000))}
+const modal=$("#modalBackdrop"),body=$("#modalBody"),title=$("#modalTitle"),eyebrow=$("#modalEyebrow");
 function openModal(kind,extra={}){
- const f=CFG.forms||{};
-
- let label="";
- let url="";
-
- if(kind==="proposal"){
-  label="ACTIVITY";
-  title.textContent="Propose an activity";
-  url=f.activityProposal;
- }
-
- if(kind==="crew"){
-  label="CREW";
-  title.textContent="Add / update my info";
-  url=f.crew;
- }
-
- if(kind==="flight"){
-  label="FLIGHTS";
-  title.textContent="Add my flight info";
-  url=f.flight;
- }
-
+ const f=CFG.forms||{};let label="",url="";
+ if(kind==="proposal"){label="ACTIVITY";title.textContent="Propose an activity";url=f.activityProposal}
+ if(kind==="crew"){label="CREW";title.textContent="Add / update my info";url=f.crew}
+ if(kind==="flight"){label="FLIGHTS";title.textContent="Add my flight info";url=f.flight}
  if(kind==="signup"){
-
-  label="ACTIVITY SIGN-UP";
-  title.textContent=`${extra.status}: ${extra.name}`;
-  url=f.activitySignup;
-
+  label="ACTIVITY SIGN-UP";title.textContent=`${extra.status}: ${extra.name}`;url=f.activitySignup;
   if(url){
-   const p=[];
-
-   if(CFG.signupActivityEntry){
-    p.push(
-     `${encodeURIComponent(CFG.signupActivityEntry)}=${encodeURIComponent(extra.id)}`
-    );
-   }
-
-   if(CFG.signupStatusEntry){
-    p.push(
-     `${encodeURIComponent(CFG.signupStatusEntry)}=${encodeURIComponent(extra.status)}`
-    );
-   }
-
-   if(p.length){
-    url+=`${url.includes("?")?"&":"?"}usp=pp_url&${p.join("&")}`;
-   }
+   const p=[];if(CFG.signupActivityEntry)p.push(`${encodeURIComponent(CFG.signupActivityEntry)}=${encodeURIComponent(extra.id)}`);
+   if(CFG.signupStatusEntry)p.push(`${encodeURIComponent(CFG.signupStatusEntry)}=${encodeURIComponent(extra.status)}`);
+   if(p.length)url+=`${url.includes("?")?"&":"?"}usp=pp_url&${p.join("&")}`
   }
  }
-
  eyebrow.textContent=label;
-
- if(url){
-  body.innerHTML=`
-   <div class="form-fallback">
-    <p>No extra app is required. The form opens in a new tab.</p>
-
-    <a
-     class="btn primary form-link"
-     href="${url}"
-     target="_blank"
-     rel="noopener">
-     Open form →
-    </a>
-
-    ${
-     kind==="signup"
-     ?
-     `<p>
-       <small>
-        Activity <b>${extra.id}</b> and
-        <b>${extra.status}</b> are already selected.
-       </small>
-      </p>`
-     :
-     ""
-    }
-
-   </div>
-  `;
- }else{
-  body.innerHTML=`
-   <div class="form-fallback">
-    <b>This form is not connected yet.</b>
-   </div>
-  `;
- }
-
- modal.hidden=false;
- document.body.style.overflow="hidden";
+ if(url)body.innerHTML=`<div class="form-fallback"><p>No extra app is required. The form opens in a new tab.</p><a class="btn primary form-link" href="${url}" target="_blank" rel="noopener">Open form →</a>${kind==="signup"?`<p><small>Activity <b>${extra.id}</b> and <b>${extra.status}</b> are already selected.</small></p>`:""}</div>`;
+ else body.innerHTML=`<div class="form-fallback"><b>This form is not connected yet.</b></div>`;
+ modal.hidden=false;document.body.style.overflow="hidden"
 }
-
-function closeModal(){
- modal.hidden=true;
- document.body.style.overflow="";
-}
-
-window.openSignup=(id,name,status)=>
- openModal("signup",{id,name,status});
+function closeModal(){modal.hidden=true;document.body.style.overflow=""}
+window.openSignup=(id,name,status)=>openModal("signup",{id,name,status});
 
 $("#activityGrid").addEventListener("click",e=>{
-
  const button=e.target.closest(".signup-button");
-
  if(!button)return;
 
  openSignup(
@@ -449,41 +215,10 @@ $("#activityGrid").addEventListener("click",e=>{
   button.dataset.activityName,
   button.dataset.status
  );
-
 });
-
-$$("[data-form]").forEach(b=>
- b.addEventListener("click",()=>openModal(b.dataset.form))
-);
-
-$("#modalClose").addEventListener("click",closeModal);
-
-modal.addEventListener("click",e=>{
- if(e.target===modal)closeModal();
-});
-
-$("#menuButton").addEventListener("click",()=>{
- $("#mobileMenu").classList.toggle("open");
-});
-
-$$(".mobile-menu a").forEach(a=>
- a.addEventListener("click",()=>
-  $("#mobileMenu").classList.remove("open")
- )
-);
-
-$$('#activityFilters button').forEach(b=>
- b.addEventListener("click",()=>{
-
-  $$("#activityFilters button")
-   .forEach(x=>x.classList.remove("active"));
-
-  b.classList.add("active");
-
-  renderActivities(b.dataset.filter);
-
- })
-);
-
-countdown();
-loadData();
+$$("[data-form]").forEach(b=>b.addEventListener("click",()=>openModal(b.dataset.form)));
+$("#modalClose").addEventListener("click",closeModal);modal.addEventListener("click",e=>{if(e.target===modal)closeModal()});
+$("#menuButton").addEventListener("click",()=>$("#mobileMenu").classList.toggle("open"));
+$$(".mobile-menu a").forEach(a=>a.addEventListener("click",()=>$("#mobileMenu").classList.remove("open")));
+$$("#activityFilters button").forEach(b=>b.addEventListener("click",()=>{$$("#activityFilters button").forEach(x=>x.classList.remove("active"));b.classList.add("active");renderActivities(b.dataset.filter)}));
+countdown();loadData();
